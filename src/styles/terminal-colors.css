@@ -1,0 +1,24 @@
+.folder {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.file {
+  color: var(--foreground);
+}
+
+.file-pdf {
+  color: var(--error);
+}
+
+.file-json {
+  color: var(--warning);
+}
+
+.file-txt {
+  color: var(--success);
+}
+
+.file-md {
+  color: var(--secondary);
+}

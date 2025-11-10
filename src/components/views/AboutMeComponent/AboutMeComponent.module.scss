@@ -1,0 +1,163 @@
+.container {
+  color: var(--foreground);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  svg {
+    color: var(--primary);
+  }
+}
+
+.section {
+  margin-bottom: 40px;
+
+  h2 {
+    font-size: 1.25rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  p {
+    color: var(--secondary);
+    line-height: 1.8;
+    font-size: 1rem;
+  }
+}
+
+.skills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.skillCategory {
+  background: var(--dark-gray);
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid var(--light-gray);
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  h3 {
+    color: var(--foreground);
+    font-size: 1rem;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+}
+
+.skillTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  span {
+    background: var(--background);
+    color: var(--secondary);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid var(--light-gray);
+  }
+}
+
+.education {
+  padding: 24px;
+  background: var(--dark-gray);
+  border-radius: 8px;
+  border: 1px solid var(--light-gray);
+
+  h3 {
+    color: var(--foreground);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .institution {
+    color: var(--secondary);
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .year {
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+}
+
+.interestTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  span {
+    background: var(--dark-gray);
+    color: var(--secondary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid var(--light-gray);
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--background);
+    }
+  }
+}
+
+.footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--light-gray);
+  text-align: center;
+
+  p {
+    color: var(--secondary);
+    font-size: 0.9rem;
+  }
+
+  code {
+    background: var(--dark-gray);
+    color: var(--success);
+    padding: 3px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--light-gray);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

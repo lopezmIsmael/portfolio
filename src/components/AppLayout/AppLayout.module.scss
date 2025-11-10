@@ -1,0 +1,25 @@
+.container {
+  display: grid;
+  grid-template-columns: minmax(400px, 2fr) 3fr;
+  height: 100vh;
+  width: 100vw;
+  background: var(--background);
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 50vh 50vh;
+  }
+}
+
+.terminal {
+  padding: 16px;
+  overflow: hidden;
+
+  @media (max-width: 1024px) {
+    padding: 8px;
+  }
+}
+
+.content {
+  overflow: hidden;
+}
