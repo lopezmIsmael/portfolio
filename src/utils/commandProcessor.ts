@@ -1,4 +1,5 @@
 import { CommandResult, ContentView } from '@/types/terminal'
+import { PROJECTS } from '@/data/projects'
 
 const AVAILABLE_COMMANDS = [
   'help      - Muestra la lista de comandos disponibles',
@@ -262,6 +263,33 @@ export function processCommand(command: string, currentPath: string = '~'): Comm
       }
 
       const lsOutput: string[] = []
+
+      // Special handling for ~/portfolio to show projects
+      if (currentPath === '~/portfolio') {
+        lsOutput.push('<br>')
+        lsOutput.push('<span style="color: var(--primary); font-weight: bold;">📁 Proyectos Disponibles</span>')
+        lsOutput.push('<span style="color: var(--secondary);">──────────────────────────────────</span>')
+
+        PROJECTS.forEach(project => {
+          const typeIcon = project.type === 'github' ? '🌐' : '🔒'
+          const typeName = project.type === 'github' ? 'GitHub' : 'Privado'
+          const techStack = project.tech.join(', ')
+
+          lsOutput.push('<br>')
+          lsOutput.push(`<span style="color: var(--primary); font-weight: bold;">${typeIcon} ${project.name}</span>`)
+          lsOutput.push(`<span style="color: var(--foreground);">   ${project.description}</span>`)
+          lsOutput.push(`<span style="color: var(--secondary);">   📚 Tech: ${techStack}</span>`)
+          lsOutput.push(`<span style="color: var(--comment);">   💼 Tipo: ${typeName}</span>`)
+        })
+
+        lsOutput.push('<br>')
+        lsOutput.push('<span style="color: var(--warning);">💡 Usa la interfaz gráfica para explorar los proyectos</span>')
+        lsOutput.push('<br>')
+
+        return {
+          output: lsOutput
+        }
+      }
 
       // Add subdirectories with folder icon
       currentDir.subdirs.forEach(dir => {

@@ -11,12 +11,12 @@ export interface ProjectConfig {
 
 export const PROJECTS: ProjectConfig[] = [
   {
-    id: 'portfolio-terminal',
-    name: 'Portfolio Terminal',
+    id: 'portfolio',
+    name: 'Portfolio',
     description: 'Portfolio interactivo con interfaz de terminal',
     tech: ['Next.js', 'TypeScript', 'SCSS'],
     type: 'github',
-    source: 'tu-usuario/portfolio-terminal', // Cambia esto por tu repo real
+    source: 'lopezmIsmael/portfolio', // Cambia esto por tu repo real
     featured: true
   },
   {

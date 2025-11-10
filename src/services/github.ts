@@ -60,7 +60,21 @@ class GitHubService {
     }
 
     // GitHub returns content in base64
-    return atob(response.content.replace(/\n/g, ''))
+    // Use proper UTF-8 decoding to handle emojis and special characters
+    const base64Content = response.content.replace(/\n/g, '')
+
+    // Decode base64 to binary string
+    const binaryString = atob(base64Content)
+
+    // Convert binary string to UTF-8
+    const bytes = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+
+    // Decode as UTF-8
+    const decoder = new TextDecoder('utf-8')
+    return decoder.decode(bytes)
   }
 
   /**

@@ -1,7 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FaFolder, FaFile, FaArrowLeft, FaGithub, FaLock } from 'react-icons/fa'
+import {
+  FaFolder,
+  FaArrowLeft,
+  FaGithub,
+  FaLock,
+  FaFilePdf,
+  FaFileImage,
+  FaFileAlt
+} from 'react-icons/fa'
+import {
+  SiJavascript,
+  SiTypescript,
+  SiReact,
+  SiPython,
+  SiHtml5,
+  SiCss3,
+  SiJson,
+  SiMarkdown
+} from 'react-icons/si'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { ProjectConfig, LOCAL_PROJECT_FILES } from '@/data/projects'
 import { githubService, GitHubFile } from '@/services/github'
 import styles from './ProjectViewer.module.scss'
@@ -19,6 +41,76 @@ export default function ProjectViewer({ project, onBack }: ProjectViewerProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>('')
   const [readme, setReadme] = useState<string>('')
+
+  const getFileIcon = (filename: string) => {
+    const ext = filename.split('.').pop()?.toLowerCase()
+
+    switch (ext) {
+      case 'js':
+        return <SiJavascript style={{ color: '#f7df1e' }} />
+      case 'jsx':
+        return <SiReact style={{ color: '#61dafb' }} />
+      case 'ts':
+        return <SiTypescript style={{ color: '#3178c6' }} />
+      case 'tsx':
+        return <SiReact style={{ color: '#61dafb' }} />
+      case 'py':
+        return <SiPython style={{ color: '#3776ab' }} />
+      case 'html':
+        return <SiHtml5 style={{ color: '#e34f26' }} />
+      case 'css':
+      case 'scss':
+      case 'sass':
+        return <SiCss3 style={{ color: '#1572b6' }} />
+      case 'json':
+        return <SiJson style={{ color: '#f1fa8c' }} />
+      case 'md':
+        return <SiMarkdown style={{ color: '#ffffff' }} />
+      case 'pdf':
+        return <FaFilePdf style={{ color: '#f40f02' }} />
+      case 'png':
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'svg':
+        return <FaFileImage style={{ color: '#50fa7b' }} />
+      default:
+        return <FaFileAlt style={{ color: '#8b949e' }} />
+    }
+  }
+
+  const getLanguageFromFilename = (filename: string): string => {
+    const ext = filename.split('.').pop()?.toLowerCase()
+
+    const languageMap: Record<string, string> = {
+      'js': 'javascript',
+      'jsx': 'jsx',
+      'ts': 'typescript',
+      'tsx': 'tsx',
+      'py': 'python',
+      'html': 'html',
+      'css': 'css',
+      'scss': 'scss',
+      'sass': 'sass',
+      'json': 'json',
+      'md': 'markdown',
+      'yml': 'yaml',
+      'yaml': 'yaml',
+      'sh': 'bash',
+      'java': 'java',
+      'c': 'c',
+      'cpp': 'cpp',
+      'cs': 'csharp',
+      'go': 'go',
+      'rs': 'rust',
+      'php': 'php',
+      'rb': 'ruby',
+      'sql': 'sql',
+      'xml': 'xml'
+    }
+
+    return languageMap[ext || ''] || 'text'
+  }
 
   useEffect(() => {
     loadProjectContents()
@@ -192,14 +284,39 @@ export default function ProjectViewer({ project, onBack }: ProjectViewerProps) {
             {readme && !selectedFile && (
               <div className={styles.readme}>
                 <h3>README.md</h3>
-                <pre>{readme}</pre>
+                <div className={styles.markdownContent}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {readme}
+                  </ReactMarkdown>
+                </div>
               </div>
             )}
 
             {fileContent && selectedFile && (
               <div className={styles.fileContent}>
                 <h3>{selectedFile.split('/').pop()}</h3>
-                <pre><code>{fileContent}</code></pre>
+                {getLanguageFromFilename(selectedFile) === 'markdown' ? (
+                  <div className={styles.markdownContent}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {fileContent}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <SyntaxHighlighter
+                    language={getLanguageFromFilename(selectedFile)}
+                    style={vscDarkPlus}
+                    showLineNumbers
+                    customStyle={{
+                      margin: 0,
+                      borderRadius: 0,
+                      background: '#0d1117',
+                      fontSize: '14px',
+                      lineHeight: '1.6'
+                    }}
+                  >
+                    {fileContent}
+                  </SyntaxHighlighter>
+                )}
               </div>
             )}
 
@@ -213,7 +330,11 @@ export default function ProjectViewer({ project, onBack }: ProjectViewerProps) {
                       className={styles.fileItem}
                       onClick={() => handleFileClick(file)}
                     >
-                      {file.type === 'dir' ? <FaFolder /> : <FaFile />}
+                      {file.type === 'dir' ? (
+                        <FaFolder style={{ color: '#58a6ff', fontSize: '24px' }} />
+                      ) : (
+                        <div style={{ fontSize: '24px' }}>{getFileIcon(file.name)}</div>
+                      )}
                       <span>{file.name}</span>
                     </div>
                   ))}
