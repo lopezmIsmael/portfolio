@@ -1,0 +1,59 @@
+# Configuración de información personal
+# Edita este archivo para actualizar tus datos personales en el portfolio
+
+profile:
+  name: "Ismael López"
+  title: "Ingeniero Informático"
+  location: "Talavera de la Reina, España"
+  status: "Disponible para proyectos"
+  image: "/images/perfil.jpg"
+
+contact:
+  email: "home.ismael.lopez@gmail.com"
+  phone: "+34620468690"
+  linkedin: "https://www.linkedin.com/in/ismael-l%C3%B3pez-mar%C3%ADn-2b5334316?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+  github: "https://github.com/lopezmIsmael"
+  whatsapp: "https://wa.me/620468690"
+
+about:
+  description: |
+    Esto es una pruebas apasionado por el desarrollo de software
+    y la creación de soluciones innovadoras. Me especializo en desarrollo
+    web full-stack y disfruto trabajando con tecnologías modernas.
+
+  extended: |
+    Con experiencia en la construcción de aplicaciones web escalables y eficientes,
+    me enfoco en crear experiencias de usuario excepcionales combinando diseño intuitivo
+    con código limpio y mantenible.
+
+skills:
+  frontend:
+    - "React / Next.js"
+    - "TypeScript"
+    - "HTML5 / CSS3"
+    - "SASS / SCSS"
+    - "Responsive Design"
+
+  backend:
+    - "Node.js"
+    - "Python"
+    - "APIs RESTful"
+    - "Bases de Datos"
+
+  tools:
+    - "Git / GitHub"
+    - "Docker"
+    - "Linux"
+    - "VS Code"
+
+education:
+  degree: "Ingeniería Informática"
+  institution: "Universidad de Castilla la Mancha, Talavera de la Reina"
+  period: "2018 - 2023"
+
+interests:
+  - "Desarrollo Web"
+  - "Open Source"
+  - "Inteligencia Artificial"
+  - "Ciberseguridad"
+  - "Linux & Terminal"

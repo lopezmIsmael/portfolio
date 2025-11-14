@@ -1,0 +1,96 @@
+# Configuración del emulador de terminal
+# Personaliza el contenido de archivos virtuales y directorios
+
+terminal:
+  user: "ismaellopez"
+  host: "portfolio"
+
+file_contents:
+  # Archivo README principal
+  "~/README.md": |
+    # Portfolio Terminal
+
+    Bienvenido a mi portfolio interactivo basado en terminal.
+
+    ## Navegación
+    - Usa `ls` para ver archivos y directorios
+    - Usa `cd <directorio>` para navegar
+    - Usa `cat <archivo>` para ver contenidos
+    - Usa `help` para ver todos los comandos
+
+    ## Secciones
+    - **about**: Información personal y habilidades
+    - **portfolio**: Proyectos realizados
+    - **blog**: Artículos y publicaciones
+    - **contact**: Información de contacto
+
+  # Portfolio
+  "~/portfolio/projects.json": |
+    {
+      "projects": [
+        {
+          "name": "Portfolio Terminal",
+          "description": "Portfolio interactivo con interfaz de terminal",
+          "tech": ["Next.js", "TypeScript", "SCSS"]
+        },
+        {
+          "name": "Delivering Solutions",
+          "description": "Plataforma de gestión de pedidos de comida",
+          "tech": ["Java", "SpringBoot", "Maven", "MySQL"]
+        }
+      ]
+    }
+
+  "~/portfolio/README.md": |
+    # Portfolio
+
+    Aquí encontrarás una selección de mis proyectos más destacados.
+
+    ## Proyectos
+    - Portfolio Terminal: Este mismo proyecto
+    - Delivering Solutions: Plataforma de gestión de pedidos
+
+    Usa `cat projects.json` para ver los detalles de cada proyecto.
+
+  # Blog
+  "~/blog/articles.json": |
+    {
+      "articles": [
+        {
+          "title": "Construyendo un portfolio con Next.js",
+          "date": "2024-03-15",
+          "summary": "Cómo crear un portfolio interactivo usando Next.js"
+        }
+      ]
+    }
+
+  "~/blog/README.md": |
+    # Blog
+
+    Artículos y publicaciones sobre desarrollo web y tecnología.
+
+    Usa `cat articles.json` para ver todos los artículos.
+
+  # Contact
+  "~/contact/info.txt": |
+    Información de Contacto
+    =====================
+
+    Email: home.ismael.lopez@gmail.com
+    LinkedIn: linkedin.com/in/ismael-lópez-marín-2b5334316
+    GitHub: github.com/lopezmIsmael
+
+    Disponible para proyectos freelance y oportunidades laborales.
+
+    Usa `cat contact.json` para ver la información en formato JSON.
+
+  "~/contact/contact.json": |
+    {
+      "email": "home.ismael.lopez@gmail.com",
+      "social": {
+        "linkedin": "linkedin.com/in/ismael-lópez-marín-2b5334316",
+        "github": "github.com/lopezmIsmael"
+      },
+      "availability": "Disponible para proyectos freelance",
+      "location": "Talavera de la Reina, España"
+    }

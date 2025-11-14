@@ -1,31 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import {
-  FaFolder,
-  FaArrowLeft,
-  FaGithub,
-  FaLock,
-  FaFilePdf,
-  FaFileImage,
-  FaFileAlt
-} from 'react-icons/fa'
-import {
-  SiJavascript,
-  SiTypescript,
-  SiReact,
-  SiPython,
-  SiHtml5,
-  SiCss3,
-  SiJson,
-  SiMarkdown
-} from 'react-icons/si'
+import { FaFolder, FaArrowLeft, FaGithub, FaLock } from 'react-icons/fa'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 import { ProjectConfig, LOCAL_PROJECT_FILES } from '@/data/projects'
 import { githubService, GitHubFile } from '@/services/github'
+import { getFileIcon, getLanguageFromFilename } from '@/utils/fileHelpers'
 import styles from './ProjectViewer.module.scss'
 
 interface ProjectViewerProps {
@@ -42,76 +26,6 @@ export default function ProjectViewer({ project, onBack }: ProjectViewerProps) {
   const [error, setError] = useState<string>('')
   const [readme, setReadme] = useState<string>('')
 
-  const getFileIcon = (filename: string) => {
-    const ext = filename.split('.').pop()?.toLowerCase()
-
-    switch (ext) {
-      case 'js':
-        return <SiJavascript style={{ color: '#f7df1e' }} />
-      case 'jsx':
-        return <SiReact style={{ color: '#61dafb' }} />
-      case 'ts':
-        return <SiTypescript style={{ color: '#3178c6' }} />
-      case 'tsx':
-        return <SiReact style={{ color: '#61dafb' }} />
-      case 'py':
-        return <SiPython style={{ color: '#3776ab' }} />
-      case 'html':
-        return <SiHtml5 style={{ color: '#e34f26' }} />
-      case 'css':
-      case 'scss':
-      case 'sass':
-        return <SiCss3 style={{ color: '#1572b6' }} />
-      case 'json':
-        return <SiJson style={{ color: '#f1fa8c' }} />
-      case 'md':
-        return <SiMarkdown style={{ color: '#ffffff' }} />
-      case 'pdf':
-        return <FaFilePdf style={{ color: '#f40f02' }} />
-      case 'png':
-      case 'jpg':
-      case 'jpeg':
-      case 'gif':
-      case 'svg':
-        return <FaFileImage style={{ color: '#50fa7b' }} />
-      default:
-        return <FaFileAlt style={{ color: '#8b949e' }} />
-    }
-  }
-
-  const getLanguageFromFilename = (filename: string): string => {
-    const ext = filename.split('.').pop()?.toLowerCase()
-
-    const languageMap: Record<string, string> = {
-      'js': 'javascript',
-      'jsx': 'jsx',
-      'ts': 'typescript',
-      'tsx': 'tsx',
-      'py': 'python',
-      'html': 'html',
-      'css': 'css',
-      'scss': 'scss',
-      'sass': 'sass',
-      'json': 'json',
-      'md': 'markdown',
-      'yml': 'yaml',
-      'yaml': 'yaml',
-      'sh': 'bash',
-      'java': 'java',
-      'c': 'c',
-      'cpp': 'cpp',
-      'cs': 'csharp',
-      'go': 'go',
-      'rs': 'rust',
-      'php': 'php',
-      'rb': 'ruby',
-      'sql': 'sql',
-      'xml': 'xml'
-    }
-
-    return languageMap[ext || ''] || 'text'
-  }
-
   useEffect(() => {
     loadProjectContents()
   }, [project, currentPath])
@@ -122,45 +36,9 @@ export default function ProjectViewer({ project, onBack }: ProjectViewerProps) {
 
     try {
       if (project.type === 'github' && project.source) {
-        const [owner, repo] = project.source.split('/')
-
-        if (!currentPath && !selectedFile) {
-          // Load README first
-          try {
-            const readmeContent = await githubService.getReadme(owner, repo)
-            setReadme(readmeContent)
-          } catch (err) {
-            console.log('README not found')
-          }
-        }
-
-        const contents = await githubService.getRepoContents(owner, repo, currentPath)
-        setFiles(contents)
+        await loadGitHubProject()
       } else if (project.type === 'local') {
-        // Load local project files
-        const localFiles = LOCAL_PROJECT_FILES[project.id]
-        if (!localFiles) {
-          setError('No hay archivos disponibles para este proyecto privado')
-          return
-        }
-
-        if (!currentPath && !selectedFile) {
-          // Show README if available
-          if (localFiles['README.md']) {
-            setReadme(localFiles['README.md'])
-          }
-        }
-
-        // Convert local files to file structure
-        const fileList: GitHubFile[] = Object.keys(localFiles).map(path => ({
-          name: path.split('/').pop() || path,
-          path: path,
-          type: 'file' as const,
-          url: '',
-          download_url: ''
-        }))
-
-        setFiles(fileList)
+        await loadLocalProject()
       }
     } catch (err: any) {
       setError(err.message || 'Error al cargar los archivos del proyecto')
@@ -169,52 +47,103 @@ export default function ProjectViewer({ project, onBack }: ProjectViewerProps) {
     }
   }
 
-  const handleFileClick = async (file: GitHubFile) => {
-    if (file.type === 'dir') {
-      setCurrentPath(file.path)
-      setSelectedFile('')
-      setFileContent('')
-      setReadme('')
-    } else {
-      setLoading(true)
-      setSelectedFile(file.path)
-      setReadme('')
+  const loadGitHubProject = async () => {
+    if (!project.source) return
 
+    const [owner, repo] = project.source.split('/')
+
+    if (!currentPath && !selectedFile) {
       try {
-        let content = ''
-
-        if (project.type === 'github' && project.source) {
-          const [owner, repo] = project.source.split('/')
-          content = await githubService.getFileContent(owner, repo, file.path)
-        } else if (project.type === 'local') {
-          const localFiles = LOCAL_PROJECT_FILES[project.id]
-          content = localFiles[file.path] || 'Contenido no disponible'
-        }
-
-        setFileContent(content)
-      } catch (err: any) {
-        setError(`Error al cargar el archivo: ${err.message}`)
-      } finally {
-        setLoading(false)
+        const readmeContent = await githubService.getReadme(owner, repo)
+        setReadme(readmeContent)
+      } catch (err) {
+        console.log('README not found')
       }
     }
+
+    const contents = await githubService.getRepoContents(owner, repo, currentPath)
+    setFiles(contents)
+  }
+
+  const loadLocalProject = async () => {
+    const localFiles = LOCAL_PROJECT_FILES[project.id]
+    if (!localFiles) {
+      setError('No hay archivos disponibles para este proyecto privado')
+      return
+    }
+
+    if (!currentPath && !selectedFile && localFiles['README.md']) {
+      setReadme(localFiles['README.md'])
+    }
+
+    const fileList: GitHubFile[] = Object.keys(localFiles).map(path => ({
+      name: path.split('/').pop() || path,
+      path: path,
+      type: 'file' as const,
+      url: '',
+      download_url: ''
+    }))
+
+    setFiles(fileList)
+  }
+
+  const handleFileClick = async (file: GitHubFile) => {
+    if (file.type === 'dir') {
+      navigateToDirectory(file.path)
+    } else {
+      await loadFileContent(file.path)
+    }
+  }
+
+  const navigateToDirectory = (path: string) => {
+    setCurrentPath(path)
+    setSelectedFile('')
+    setFileContent('')
+    setReadme('')
+  }
+
+  const loadFileContent = async (filePath: string) => {
+    setLoading(true)
+    setSelectedFile(filePath)
+    setReadme('')
+
+    try {
+      const content = await fetchFileContent(filePath)
+      setFileContent(content)
+    } catch (err: any) {
+      setError(`Error al cargar el archivo: ${err.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchFileContent = async (filePath: string): Promise<string> => {
+    if (project.type === 'github' && project.source) {
+      const [owner, repo] = project.source.split('/')
+      return await githubService.getFileContent(owner, repo, filePath)
+    } else if (project.type === 'local') {
+      const localFiles = LOCAL_PROJECT_FILES[project.id]
+      return localFiles[filePath] || 'Contenido no disponible'
+    }
+    return ''
   }
 
   const handleBackNavigation = () => {
     if (selectedFile) {
-      // Go back to file list
       setSelectedFile('')
       setFileContent('')
       loadProjectContents()
     } else if (currentPath) {
-      // Go back one directory
-      const pathParts = currentPath.split('/')
-      pathParts.pop()
-      setCurrentPath(pathParts.join('/'))
+      navigateToParentDirectory()
     } else {
-      // Go back to projects list
       onBack()
     }
+  }
+
+  const navigateToParentDirectory = () => {
+    const pathParts = currentPath.split('/')
+    pathParts.pop()
+    setCurrentPath(pathParts.join('/'))
   }
 
   const renderBreadcrumb = () => {
@@ -285,7 +214,10 @@ export default function ProjectViewer({ project, onBack }: ProjectViewerProps) {
               <div className={styles.readme}>
                 <h3>README.md</h3>
                 <div className={styles.markdownContent}>
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw]}
+                  >
                     {readme}
                   </ReactMarkdown>
                 </div>
@@ -297,7 +229,10 @@ export default function ProjectViewer({ project, onBack }: ProjectViewerProps) {
                 <h3>{selectedFile.split('/').pop()}</h3>
                 {getLanguageFromFilename(selectedFile) === 'markdown' ? (
                   <div className={styles.markdownContent}>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeRaw]}
+                    >
                       {fileContent}
                     </ReactMarkdown>
                   </div>

@@ -1,0 +1,59 @@
+# Configuración de proyectos
+# Edita este archivo para agregar, editar o eliminar proyectos de tu portfolio
+
+projects:
+  - id: "portfolio"
+    name: "Portfolio"
+    description: "Portfolio interactivo con interfaz de terminal"
+    tech:
+      - "Next.js"
+      - "TypeScript"
+      - "SCSS"
+    type: "github"
+    source: "lopezmIsmael/portfolio"
+    featured: false
+
+  - id: "delivering-food-platform"
+    name: "Plataforma de Entrega de Comida"
+    description: "Plataforma de gestión de pedidos de comida"
+    tech:
+      - "Java"
+      - "SpringBoot"
+      - "Maven"
+      - "MySQL"
+    type: "github"
+    source: "lopezmIsmael/DeliveringSolutions"
+    featured: true
+
+  - id: "gestor-de-presupuestos"
+    name: "Plataforma de Gestión para Constructoras"
+    description: "Plataforma de gestión de materiales, presupuestos, empleados y partes de trabajo"
+    tech:
+      - "Python"
+      - "HTML"
+      - "PyQt"
+      - "SQLite"
+    type: "github"
+    source: "lopezmIsmael/Gestor-de-Presupuestos"
+    featured: false
+
+# Proyectos locales/privados
+# Para proyectos que no quieres exponer públicamente en GitHub
+local_projects: {}
+  # Ejemplo de proyecto privado:
+  # my-private-project:
+  #   files:
+  #     "README.md": |
+  #       # Mi Proyecto Privado
+  #
+  #       Descripción del proyecto...
+  #
+  #       ## Características
+  #       - Feature 1
+  #       - Feature 2
+  #
+  #     "package.json": |
+  #       {
+  #         "name": "my-project",
+  #         "version": "1.0.0"
+  #       }

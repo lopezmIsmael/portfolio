@@ -1,205 +1,13 @@
 import { CommandResult, ContentView } from '@/types/terminal'
 import { PROJECTS } from '@/data/projects'
+import { AVAILABLE_COMMANDS, KEYBOARD_SHORTCUTS } from '@/constants/commands'
+import { FILE_SYSTEM } from '@/constants/fileSystem'
+import { FILE_CONTENTS } from '@/data/fileContents'
+import { TERMINAL_CONFIG } from '@/data/generated/terminal'
 
-const AVAILABLE_COMMANDS = [
-  'help      - Muestra la lista de comandos disponibles',
-  'ls        - Lista los directorios y archivos principales',
-  'cd <dir>  - Navega a una sección (about, portfolio, blog, contact)',
-  'pwd       - Muestra el directorio actual',
-  'whoami    - Muestra información del usuario (igual que about)',
-  'clear     - Limpia el historial de la terminal',
-  'cat <file> - Muestra el contenido de un archivo'
-]
-
-const DIRECTORIES = ['portfolio', 'blog', 'contact']
-const FILES = ['resume.pdf']
-
-interface DirectoryStructure {
-  [key: string]: {
-    files: string[]
-    subdirs: string[]
-    description?: string
-  }
-}
-
-const FILE_SYSTEM: DirectoryStructure = {
-  '~': {
-    files: ['resume.pdf', 'README.md'],
-    subdirs: ['portfolio', 'blog', 'contact'],
-    description: 'Directorio principal'
-  },
-  '~/portfolio': {
-    files: ['projects.json', 'README.md'],
-    subdirs: [],
-    description: 'Proyectos realizados'
-  },
-  '~/blog': {
-    files: ['articles.json', 'README.md'],
-    subdirs: [],
-    description: 'Artículos y publicaciones'
-  },
-  '~/contact': {
-    files: ['info.txt', 'contact.json'],
-    subdirs: [],
-    description: 'Información de contacto'
-  }
-}
-
-const FILE_CONTENTS: { [key: string]: string[] } = {
-  '~/README.md': [
-    '# Portfolio Terminal',
-    '',
-    'Bienvenido a mi portfolio interactivo basado en terminal.',
-    '',
-    '## Navegación',
-    '- Usa `ls` para ver archivos y directorios',
-    '- Usa `cd <directorio>` para navegar',
-    '- Usa `cat <archivo>` para ver contenidos',
-    '- Usa `help` para ver todos los comandos',
-    '',
-    '## Secciones',
-    '- **about**: Información personal y habilidades',
-    '- **portfolio**: Proyectos realizados',
-    '- **blog**: Artículos y publicaciones',
-    '- **contact**: Información de contacto'
-  ],
-  '~/about/bio.txt': [
-    'Desarrollador Full Stack apasionado por crear experiencias web innovadoras.',
-    '',
-    'Me especializo en tecnologías modernas como React, Next.js, TypeScript,',
-    'y disfruto construyendo interfaces de usuario interactivas y accesibles.',
-    '',
-    'Siempre estoy aprendiendo nuevas tecnologías y mejorando mis habilidades',
-    'para crear soluciones eficientes y escalables.'
-  ],
-  '~/about/skills.json': [
-    '{',
-    '  "frontend": [',
-    '    "React",',
-    '    "Next.js",',
-    '    "TypeScript",',
-    '    "SCSS",',
-    '    "Tailwind CSS"',
-    '  ],',
-    '  "backend": [',
-    '    "Node.js",',
-    '    "Express",',
-    '    "Python",',
-    '    "Django"',
-    '  ],',
-    '  "tools": [',
-    '    "Git",',
-    '    "Docker",',
-    '    "VS Code",',
-    '    "Figma"',
-    '  ]',
-    '}'
-  ],
-  '~/about/README.md': [
-    '# Sobre mí',
-    '',
-    'Desarrollador con pasión por la tecnología y la innovación.',
-    '',
-    '## Habilidades principales',
-    '- Desarrollo Frontend con React y Next.js',
-    '- Desarrollo Backend con Node.js',
-    '- Diseño de interfaces de usuario',
-    '- Arquitectura de aplicaciones web',
-    '',
-    'Usa `cat bio.txt` para leer mi biografía.',
-    'Usa `cat skills.json` para ver mis habilidades técnicas.'
-  ],
-  '~/portfolio/projects.json': [
-    '{',
-    '  "projects": [',
-    '    {',
-    '      "name": "Portfolio Terminal",',
-    '      "description": "Portfolio interactivo con interfaz de terminal",',
-    '      "tech": ["Next.js", "TypeScript", "SCSS"]',
-    '    },',
-    '    {',
-    '      "name": "E-commerce Platform",',
-    '      "description": "Plataforma de comercio electrónico completa",',
-    '      "tech": ["React", "Node.js", "MongoDB"]',
-    '    },',
-    '    {',
-    '      "name": "Task Manager",',
-    '      "description": "Aplicación de gestión de tareas",',
-    '      "tech": ["React", "TypeScript", "Firebase"]',
-    '    }',
-    '  ]',
-    '}'
-  ],
-  '~/portfolio/README.md': [
-    '# Portfolio',
-    '',
-    'Aquí encontrarás una selección de mis proyectos más destacados.',
-    '',
-    '## Proyectos',
-    '- Portfolio Terminal: Este mismo proyecto',
-    '- E-commerce Platform: Plataforma de comercio electrónico',
-    '- Task Manager: Aplicación de gestión de tareas',
-    '',
-    'Usa `cat projects.json` para ver los detalles de cada proyecto.'
-  ],
-  '~/blog/articles.json': [
-    '{',
-    '  "articles": [',
-    '    {',
-    '      "title": "Construyendo un portfolio con Next.js",',
-    '      "date": "2024-03-15",',
-    '      "summary": "Cómo crear un portfolio interactivo usando Next.js"',
-    '    },',
-    '    {',
-    '      "title": "TypeScript en aplicaciones React",',
-    '      "date": "2024-02-28",',
-    '      "summary": "Ventajas de usar TypeScript en proyectos React"',
-    '    },',
-    '    {',
-    '      "title": "CSS Modules vs Tailwind",',
-    '      "date": "2024-01-20",',
-    '      "summary": "Comparación entre CSS Modules y Tailwind CSS"',
-    '    }',
-    '  ]',
-    '}'
-  ],
-  '~/blog/README.md': [
-    '# Blog',
-    '',
-    'Artículos y publicaciones sobre desarrollo web y tecnología.',
-    '',
-    '## Últimas publicaciones',
-    '- Construyendo un portfolio con Next.js',
-    '- TypeScript en aplicaciones React',
-    '- CSS Modules vs Tailwind',
-    '',
-    'Usa `cat articles.json` para ver todos los artículos.'
-  ],
-  '~/contact/info.txt': [
-    'Información de Contacto',
-    '=====================',
-    '',
-    'Email: tu.email@example.com',
-    'LinkedIn: linkedin.com/in/tu-perfil',
-    'GitHub: github.com/tu-usuario',
-    'Twitter: @tu_usuario',
-    '',
-    'Disponible para proyectos freelance y oportunidades laborales.',
-    '',
-    'Usa `cat contact.json` para ver la información en formato JSON.'
-  ],
-  '~/contact/contact.json': [
-    '{',
-    '  "email": "tu.email@example.com",',
-    '  "social": {',
-    '    "linkedin": "linkedin.com/in/tu-perfil",',
-    '    "github": "github.com/tu-usuario",',
-    '    "twitter": "@tu_usuario"',
-    '  },',
-    '  "availability": "Disponible para proyectos freelance",',
-    '  "location": "España"',
-    '}'
-  ]
+function isValidContentView(view: string): view is ContentView {
+  const validViews: ContentView[] = ['welcome', 'about', 'portfolio', 'blog', 'contact', 'resume']
+  return validViews.includes(view as ContentView)
 }
 
 export function processCommand(command: string, currentPath: string = '~'): CommandResult {
@@ -217,10 +25,7 @@ export function processCommand(command: string, currentPath: string = '~'): Comm
           'Escribe un comando para comenzar.',
           '',
           'Atajos de teclado:',
-          '  Ctrl+L      - Limpia la pantalla',
-          '  Ctrl+C      - Cancela el comando actual',
-          '  Tab         - Autocompleta comandos y rutas',
-          '  ↑/↓         - Navega por el historial'
+          ...KEYBOARD_SHORTCUTS
         ]
       }
 
@@ -388,10 +193,9 @@ export function processCommand(command: string, currentPath: string = '~'): Comm
         }
       }
 
-      // Check if directory exists
       if (FILE_SYSTEM[targetPath]) {
         const dirName = targetPath.replace('~/', '')
-        const contentView = DIRECTORIES.includes(dirName) ? dirName as ContentView : undefined
+        const contentView: ContentView | undefined = isValidContentView(dirName) ? dirName : undefined
 
         return {
           output: [''],
@@ -467,7 +271,7 @@ export function processCommand(command: string, currentPath: string = '~'): Comm
 }
 
 export function getPrompt(currentPath: string = '~'): string {
-  const promptUser = `<span style="color: var(--success);">ismaellopez@portfolio</span>`
+  const promptUser = `<span style="color: var(--success);">${TERMINAL_CONFIG.terminal.user}@${TERMINAL_CONFIG.terminal.host}</span>`
   const promptPath = `<span style="color: var(--primary);">${currentPath}</span>`
   return `${promptUser}:${promptPath}$`
 }

@@ -1,10 +1,20 @@
 'use client'
 
 import { ContentView } from '@/types/terminal'
-import { FaFolder, FaFileAlt, FaFilePdf, FaChevronRight } from 'react-icons/fa'
+import { FaFolder, FaFileAlt, FaFilePdf } from 'react-icons/fa'
 import { IoHome } from 'react-icons/io5'
 import PortfolioView from '@/components/views/PortfolioView/PortfolioView'
+import AboutMeComponent from '@/components/views/AboutMeComponent/AboutMeComponent'
 import styles from './ContentPanel.module.scss'
+
+const BREADCRUMB_PATHS: Record<ContentView, string[]> = {
+  'welcome': ['Home'],
+  'about': ['Home', 'About.md'],
+  'portfolio': ['Home', 'Portfolio'],
+  'blog': ['Home', 'Blog'],
+  'contact': ['Home', 'Contact'],
+  'resume': ['Home', 'Resume.pdf']
+}
 
 interface ContentPanelProps {
   view: ContentView
@@ -13,15 +23,7 @@ interface ContentPanelProps {
 
 export default function ContentPanel({ view, onNavigate }: ContentPanelProps) {
   const renderBreadcrumb = () => {
-    const paths = {
-      'welcome': ['Home'],
-      'portfolio': ['Home', 'Portfolio'],
-      'blog': ['Home', 'Blog'],
-      'contact': ['Home', 'Contact'],
-      'resume': ['Home', 'Resume.pdf']
-    }
-
-    const currentPath = paths[view] || ['Home']
+    const currentPath = BREADCRUMB_PATHS[view] || ['Home']
 
     return (
       <div className={styles.breadcrumb}>
@@ -30,8 +32,8 @@ export default function ContentPanel({ view, onNavigate }: ContentPanelProps) {
             key={index}
             onClick={index === 0 ? () => onNavigate?.('welcome') : undefined}
           >
-            {index === 0 ? <IoHome size={14} /> : item}
-            {index < currentPath.length - 1 && <FaChevronRight size={10} className={styles.separator} />}
+            {index === 0 ? <IoHome /> : item}
+            {index < currentPath.length - 1 && <span className={styles.separator}>&gt;</span>}
           </span>
         ))}
       </div>
@@ -41,14 +43,7 @@ export default function ContentPanel({ view, onNavigate }: ContentPanelProps) {
   const renderContent = () => {
     switch (view) {
       case 'about':
-        return (
-          <div className={styles.documentView}>
-            <div className={styles.placeholder}>
-              <h2>About Me</h2>
-              <p>Information coming soon...</p>
-            </div>
-          </div>
-        )
+        return <AboutMeComponent />
 
       case 'portfolio':
         return <PortfolioView />
@@ -121,9 +116,10 @@ export default function ContentPanel({ view, onNavigate }: ContentPanelProps) {
 
               <div
                 className={`${styles.fileItem} ${styles.file}`}
+                onClick={() => onNavigate?.('about')}
               >
                 <FaFileAlt />
-                <span>README.md</span>
+                <span>About.md</span>
               </div>
             </div>
           </>

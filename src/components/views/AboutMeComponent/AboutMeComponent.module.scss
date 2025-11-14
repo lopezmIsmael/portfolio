@@ -1,13 +1,15 @@
 .container {
   color: var(--foreground);
   animation: fadeIn 0.3s ease-out;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 
   h1 {
     font-size: 2rem;
@@ -17,6 +19,168 @@
 
   svg {
     color: var(--primary);
+  }
+}
+
+// Profile Section
+.profileSection {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+  padding: 32px;
+  background: linear-gradient(135deg, var(--dark-gray) 0%, rgba(30, 30, 30, 0.5) 100%);
+  border-radius: 16px;
+  border: 1px solid var(--light-gray);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.profileImageWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profileImage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  .image {
+    border-radius: 50%;
+    border: 4px solid var(--primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    object-fit: cover;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+  }
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--background);
+  border: 1px solid var(--success);
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  background: var(--success);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.statusText {
+  color: var(--success);
+  font-weight: 600;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    align-items: center;
+  }
+}
+
+.name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title {
+  font-size: 1.2rem;
+  color: var(--secondary);
+  margin: 0;
+  font-weight: 500;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--secondary);
+  font-size: 1rem;
+  margin: 8px 0;
+
+  svg {
+    color: var(--primary);
+  }
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+}
+
+.socialLinks {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--background);
+  border: 1px solid var(--light-gray);
+  border-radius: 12px;
+  color: var(--secondary);
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: var(--dark-gray);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(-2px);
   }
 }
 

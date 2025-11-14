@@ -201,6 +201,12 @@
   font-size: 16px;
   line-height: 1.6;
 
+  // Support for HTML align attribute
+  div[align="center"],
+  p[align="center"] {
+    text-align: center;
+  }
+
   // GitHub-style markdown
   h1, h2, h3, h4, h5, h6 {
     color: var(--foreground);
@@ -214,6 +220,13 @@
   h1 {
     font-size: 2em;
     border-bottom: 1px solid var(--light-gray);
+
+    // Centered titles in GitHub style
+    &:has(~ *[align="center"]),
+    [align="center"] & {
+      text-align: center;
+      border-bottom: none;
+    }
   }
 
   h2 {
@@ -232,6 +245,13 @@
   p {
     margin-top: 0;
     margin-bottom: 16px;
+
+    // Badges and images in paragraphs
+    img {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 4px;
+    }
   }
 
   a {
@@ -240,6 +260,18 @@
 
     &:hover {
       text-decoration: underline;
+    }
+
+    // GitHub badges
+    img[src*="shields.io"],
+    img[src*="badge"],
+    img[alt*="badge" i],
+    img[alt*="license" i],
+    img[alt*="build" i] {
+      display: inline-block;
+      height: 20px;
+      vertical-align: middle;
+      margin: 2px 4px;
     }
   }
 
@@ -288,6 +320,8 @@
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 16px;
+    margin-left: auto;
+    margin-right: auto;
 
     th, td {
       padding: 6px 13px;
@@ -313,6 +347,26 @@
     max-width: 100%;
     height: auto;
     border-radius: 6px;
+    display: block;
+    margin: 16px auto;
+
+    // Inline images (badges, etc)
+    &[height="20"],
+    &[height="18"] {
+      display: inline-block;
+      margin: 0 4px;
+      vertical-align: middle;
+    }
+  }
+
+  // Emojis
+  img[alt*=":"],
+  img[src*="emoji"] {
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+    margin: 0 0.1em;
+    vertical-align: middle;
   }
 
   hr {
@@ -321,6 +375,12 @@
     margin: 24px 0;
     background-color: var(--light-gray);
     border: 0;
+  }
+
+  // Support for centered content blocks
+  > div:has(img:only-child),
+  > p:has(img:only-child) {
+    text-align: center;
   }
 }
 

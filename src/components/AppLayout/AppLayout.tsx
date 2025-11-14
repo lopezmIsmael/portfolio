@@ -13,9 +13,9 @@ export default function AppLayout() {
   const handleNavigate = (view: ContentView) => {
     setContentView(view)
 
-    // Sync terminal path with navigation
     const pathMap: Record<ContentView, string> = {
       'welcome': '~',
+      'about': '~',
       'portfolio': '~/portfolio',
       'blog': '~/blog',
       'contact': '~/contact',
